@@ -46,56 +46,58 @@ public class MainActivity extends AppCompatActivity {
         sunset_time_data= findViewById(R.id.sunset_time_data);
         isha_time_data= findViewById(R.id.isha_time_data);
 
+        RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate currentDate = LocalDate.now();
+        String date = currentDate.format(formatter);
+        String url = "https://api.aladhan.com/v1/timingsByAddress/"+date+"?address=Dhaka,Bangladesh&method=8";
+
+        // call api
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    // Assuming the JSON object is stored in a variable called 'response'
+                    JSONObject data = response.getJSONObject("data");
+                    JSONObject timings = data.getJSONObject("timings");
+                    String fajr = timings.getString("Fajr");
+                    String sunrise = timings.getString("Sunrise");
+                    String dhuhr = timings.getString("Dhuhr");
+                    String asr = timings.getString("Asr");
+                    String sunset = timings.getString("Sunset");
+                    String maghrib = timings.getString("Maghrib");
+                    String isha = timings.getString("Isha");
+
+                    fajr_time_data.setText("Fajar: "+fajr);
+                    sunrise_time_data.setText("Sunrise: "+sunrise);
+                    dhuhr_time_data.setText("Dhuhr: "+dhuhr);
+                    asr_time_data.setText("Asr: "+asr);
+                    sunset_time_data.setText("Sunset: "+sunset);
+                    magrib_time_data.setText("Maghrib: "+maghrib);
+                    isha_time_data.setText("Isha: "+isha);
+
+                } catch (JSONException e) {
+                    // Handle the exception here
+                    e.printStackTrace(); // This will print the error stack trace to the console
+                    Toast.makeText(MainActivity.this, "Error!!!", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println("error: "+ error);
+                Toast.makeText(MainActivity.this, "Error!!!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        queue.add(request);
+
 
         // on event click
         fetchTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                LocalDate currentDate = LocalDate.now();
-                String date = currentDate.format(formatter);
-                String url = "https://api.aladhan.com/v1/timingsByAddress/"+date+"?address=Dhaka,Bangladesh&method=8";
 
-                // call api
-                JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            // Assuming the JSON object is stored in a variable called 'response'
-                            JSONObject data = response.getJSONObject("data");
-                            JSONObject timings = data.getJSONObject("timings");
-                            String fajr = timings.getString("Fajr");
-                            String sunrise = timings.getString("Sunrise");
-                            String dhuhr = timings.getString("Dhuhr");
-                            String asr = timings.getString("Asr");
-                            String sunset = timings.getString("Sunset");
-                            String maghrib = timings.getString("Maghrib");
-                            String isha = timings.getString("Isha");
-
-                            fajr_time_data.setText("Fajar: "+fajr);
-                            sunrise_time_data.setText("Sunrise: "+sunrise);
-                            dhuhr_time_data.setText("Dhuhr: "+dhuhr);
-                            asr_time_data.setText("Asr: "+asr);
-                            sunset_time_data.setText("Sunset: "+sunset);
-                            magrib_time_data.setText("Maghrib: "+maghrib);
-                            isha_time_data.setText("Isha: "+isha);
-
-                        } catch (JSONException e) {
-                            // Handle the exception here
-                            e.printStackTrace(); // This will print the error stack trace to the console
-                            Toast.makeText(MainActivity.this, "Error!!!", Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        System.out.println("error: "+ error);
-                        Toast.makeText(MainActivity.this, "Error!!!", Toast.LENGTH_SHORT).show();
-                    }
-                });
-                queue.add(request);
 
 
             }
