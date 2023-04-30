@@ -81,6 +81,12 @@ public class MainActivity extends AppCompatActivity {
 
                         }).show();
             }
+            else{
+                Toast.makeText(MainActivity.this, "Successfully accessed location.", Toast.LENGTH_SHORT).show();
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            }
         }
     }
 
