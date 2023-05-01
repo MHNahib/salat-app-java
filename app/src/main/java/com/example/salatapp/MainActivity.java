@@ -131,10 +131,21 @@ public class MainActivity extends AppCompatActivity {
                                     Log.d("LOCATION", "onSuccess: " + addressList.get(0).getLocality());
                                     Log.d("LOCATION", "onSuccess: " + addressList.get(0).getCountryName());
 
-                                    current_country.setText(addressList.get(0).getCountryName());
-                                    current_city.setText(addressList.get(0).getLocality());
+                                    String city="Dhaka", country="Bangladesh";
 
-                                    url[0] = "https://api.aladhan.com/v1/timingsByAddress/"+date+"?address="+addressList.get(0).getLocality()+","+addressList.get(0).getCountryName()+"&method=1";
+                                    if(addressList.get(0).getCountryName()!=null){
+                                        country= addressList.get(0).getCountryName();
+                                    }
+                                    if(addressList.get(0).getLocality()!=null){
+                                        city= addressList.get(0).getLocality();
+                                    }
+//
+//                                    current_country.setText(addressList.get(0).getCountryName());
+//                                    current_city.setText(addressList.get(0).getLocality());
+
+                                    current_country.setText(country);
+                                    current_city.setText(city);
+                                    url[0] = "https://api.aladhan.com/v1/timingsByAddress/"+date+"?address="+city+","+country+"&method=1";
                                     callAPI();
                                 }
                             } catch (IOException e) {
@@ -202,7 +213,9 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace(); // This will print the error stack trace to the console
                     Toast.makeText(MainActivity.this, "Error!!!", Toast.LENGTH_SHORT).show();
                 } catch (ParseException e) {
+                    Toast.makeText(MainActivity.this, "Error!!! "+ e , Toast.LENGTH_SHORT).show();
                     throw new RuntimeException(e);
+
                 }
 
             }
